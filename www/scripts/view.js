@@ -4,22 +4,28 @@ var app = function(app) {  // module pattern
 
         var stageW = stage.width;
         var stageH = stage.height;
+
         // MAIN MENU START
         const menuPage = v.menuPage = new Container(stageW,stageH);
-        const playButton = v.playButton = new Rectangle().center(menuPage);
-
+        const playButton = v.playButton = new Rectangle(50,50);
+        const playButton2 = v.playButton2 = new Rectangle(50,50);
+        const menu = v.menu = new Tile({
+          obj:series(playButton,playButton2),
+          cols:2
+        }).addTo(menuPage)
         const menuPageLayout = new Layout(menuPage,[
-          {object:playButton}
+          {object:menu}
         ]);
         // MAIN MENU END
 
         // BATTLE PAGE START
         const battlePage = v.battlePage = new Container(stageW,stageH);
+        var customizeButton = v.customizeButton = new Rectangle(stageW*.20,stageH*.20,grey);
         var settingsButton = v.settingsButton = new Rectangle(stageW*.20,stageH*.20,purple);
-        var pausePower = v.pausePower = new Rectangle(stageW*.20,stageH*.20,white);
+        var pausePower = v.pausePower = new Rectangle(stageW*.60,stageH*.20,white);
         v.topGui = new Tile({
-          obj:series(settingsButton,new Rectangle(stageW*.20,stageH*.20),pausePower,new Rectangle(stageW*.20,stageH*.20),new Rectangle(stageW*.20,stageH*.20)),
-          cols:5, rows:1,
+          obj:series(settingsButton,customizeButton,pausePower),
+          cols:3, rows:1,
           height:stageH*.20, width:stageW,
           clone:false
         }).addTo(battlePage);
@@ -32,6 +38,7 @@ var app = function(app) {  // module pattern
         v.heroArea = new Rectangle(v.topPath.width*.10,v.topPath.height,grey).addTo(v.topPath);
         v.heroArea2 = new Rectangle(v.midPath.width*.10,v.midPath.height,grey).addTo(v.midPath);
         v.heroArea3 = new Rectangle(v.botPath.width*.10,v.botPath.height,grey).addTo(v.botPath);
+        v.areaArray = [v.heroArea,v.heroArea2,v.heroArea3];
 
         v.attackArray = [];
         v.heroAttack = new Circle(8,black);
@@ -54,12 +61,22 @@ var app = function(app) {  // module pattern
         v.enemyArray3 = [];
         v.enemy3 = new Circle(v.heroArea3.width*.40,red);
 
-        v.attackArrayArray = [];
+        v.heroSelect1 = new Rectangle(stageW*.25,stageH*.20,black);
+        v.heroSelect2 = new Rectangle(stageW*.25,stageH*.20,black);
+        v.heroSelect3 = new Rectangle(stageW*.25,stageH*.20,black);
+        v.heroSelect4 = new Rectangle(stageW*.25,stageH*.20,black);
         v.botGui = new Tile({
-          obj:series(new Rectangle(stageW*.25,stageH*.20),new Rectangle(stageW*.25,stageH*.20),new Rectangle(stageW*.25,stageH*.20),new Rectangle(stageW*.25,stageH*.20)),
+          obj:series(v.heroSelect1,v.heroSelect2,v.heroSelect3,v.heroSelect4),
           cols:4, rows:1,
           height:stageH*.20, width:stageW
         }).addTo(battlePage);
+
+        v.heroAvatar1 = new Circle(v.heroSelect1.width*.20,green).center(v.botGui.children[0]);
+        v.heroAvatar2 = new Circle(v.heroSelect2.width*.20,blue).center(v.botGui.children[1]);
+        v.heroAvatar3 = new Circle(v.heroSelect3.width*.20,orange).center(v.botGui.children[2]);
+        v.heroAvatar4 = new Circle(v.heroSelect4.width*.20,pink).center(v.botGui.children[3]);
+
+        v.pauseActive = new Rectangle(stageW,stageH*.60,blue).center(battlePage).alp(0);
 
         const battlePageLayout = new Layout(battlePage,[
           {object:v.topGui},
@@ -103,10 +120,10 @@ var app = function(app) {  // module pattern
         ]);
         // SETTINGS PAGE END
 
-        v.manager = new LayoutManager();
+        v.manager = new Manager();
 
-        v.manager.add(battlePageLayout);
         v.manager.add(menuPageLayout);
+        v.manager.add(battlePageLayout);
         v.manager.add(settingsPageLayout);
 
         const pages = v.pages = new Pages([
@@ -114,6 +131,8 @@ var app = function(app) {  // module pattern
           {page:battlePage},
           {page:settingsPage}
         ],"slide").addTo();
+
+        v.manager.add(pages);
 
         return v;
     }
