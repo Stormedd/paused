@@ -6,14 +6,14 @@
         id        = "com.sheridan.imm.collective"
         version   = "1.0.0">
 
-    <name>Hello World</name>
+    <name>Paused</name>
 
     <description>
-        Hello World sample application that responds to the deviceready event.
+      Stop enemies from getting to your base by utilizing your pause powers to control the flow of the game.
     </description>
 
     <author>
-        Storm
+      Storm
     </author>
 
     <!--
@@ -24,7 +24,7 @@
     <preference name="permissions"                value="none"/>
 
     <!-- Customize your app and platform with the preference element. -->
-    <preference name="orientation"                value="default" />        <!-- all: default means both landscape and portrait are enabled -->
+    <preference name="orientation"                value="landscape" />        <!-- all: default means both landscape and portrait are enabled -->
     <preference name="target-device"              value="universal" />      <!-- all: possible values handset, tablet, or universal -->
     <preference name="fullscreen"                 value="true" />           <!-- all: hides the status bar at the top of the screen -->
     <preference name="webviewbounce"              value="true" />           <!-- ios: control whether the screen 'bounces' when scrolled beyond the top -->
