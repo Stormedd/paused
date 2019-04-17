@@ -4,16 +4,16 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.sheridan.imm.collective"
-        version   = "1.0.0">
+        version   = "1.0.1">
 
-    <name>Paused</name>
+    <name>Paused Heroes</name>
 
     <description>
       Stop enemies from getting to your base by utilizing your pause powers to control the flow of the game.
     </description>
 
     <author>
-      Storm
+      Storm Studio
     </author>
 
     <!--
