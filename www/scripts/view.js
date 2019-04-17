@@ -8,11 +8,13 @@ var app = function(app) {  // module pattern
         // MAIN MENU START
         const menuPage = v.menuPage = new Container(stageW,stageH);
         const playButton = v.playButton = new Rectangle(50,50);
-        const playButton2 = v.playButton2 = new Rectangle(50,50);
-        const menu = v.menu = new Tile({
-          obj:series(playButton,playButton2),
-          cols:2
-        }).addTo(menuPage)
+        const playButton2 = v.playButton2 = new Rectangle(50,50,grey);
+        const menu = v.menu = new Tabs({
+          width:stageW, height:stageH,
+          tabs:[playButton,playButton2],
+          backgroundColor:black,
+          color:black
+        }).addTo(menuPage);
         const menuPageLayout = new Layout(menuPage,[
           {object:menu}
         ]);
@@ -20,6 +22,8 @@ var app = function(app) {  // module pattern
 
         // BATTLE PAGE START
         const battlePage = v.battlePage = new Container(stageW,stageH);
+        var bg = frame.asset("bg.png").center(battlePage).mov(0,20);
+        var bgScroll = new Scroller(bg,1,true,1,null,stage);
         var customizeButton = v.customizeButton = new Rectangle(stageW*.20,stageH*.20,grey);
         var settingsButton = v.settingsButton = new Rectangle(stageW*.20,stageH*.20,purple);
         var pausePower = v.pausePower = new Rectangle(stageW*.60,stageH*.20,white);
@@ -30,62 +34,162 @@ var app = function(app) {  // module pattern
           clone:false
         }).addTo(battlePage);
 
-        v.topPath = new Rectangle(stageW,stageH*.20,green).addTo(battlePage);
-        v.midPath = new Rectangle(stageW,stageH*.20,blue).addTo(battlePage);
-        v.botPath = new Rectangle(stageW,stageH*.20,orange).addTo(battlePage);
-        v.pathArray = [v.topPath,v.midPath,v.botPath];
+        var top = new Rectangle(stageW,stageH*.20,"rgba(0,0,0,0)").addTo(battlePage).mov(-10,40);
+        var topImg = frame.asset("top.png").sca(1).addTo(top).mov(-10,40);
 
-        v.heroArea = new Rectangle(v.topPath.width*.10,v.topPath.height,grey).addTo(v.topPath);
-        v.heroArea2 = new Rectangle(v.midPath.width*.10,v.midPath.height,grey).addTo(v.midPath);
-        v.heroArea3 = new Rectangle(v.botPath.width*.10,v.botPath.height,grey).addTo(v.botPath);
-        v.areaArray = [v.heroArea,v.heroArea2,v.heroArea3];
+        var middle = new Rectangle(stageW,stageH*.20,"rgba(0,0,0,0)").addTo(battlePage).mov(-10,20);
+        var middleImg = frame.asset("middle.png").sca(1).addTo(middle).mov(-10,20);
 
-        v.attackArray = [];
-        v.heroAttack = new Circle(8,black);
-        v.hero = new Circle(v.heroArea.width*.40,green).center(v.heroArea);//.pos(v.topPath.width*.001,v.topPath.height*4.6);
+        var bottom = new Rectangle(stageW,stageH*.20,"rgba(0,0,0,0)").addTo(battlePage).mov(-10);
+        var bottomImg = frame.asset("bottom.png").sca(1).addTo(bottom).mov(-10);
 
-        v.attackArray2 = [];
-        v.heroAttack2 = new Circle(8,black);
-        v.hero2 = new Circle(v.heroArea2.width*.40,blue).center(v.heroArea2);
+        v.path = {
+          filled:false,
+          hero:0,
+          enemies:0,
+          shape:top
+        }
+        v.path2 = {
+          filled:false,
+          hero:0,
+          enemies:0,
+          shape:middle
+        }
+        v.path3 = {
+          filled:false,
+          hero:0,
+          enemies:0,
+          shape:bottom
+        }
 
-        v.attackArray3 = [];
-        v.heroAttack3 = new Circle(8,black);
-        v.hero3 = new Circle(v.heroArea3.width*.40,orange).center(v.heroArea3);
+        var heroArea1 = v.heroArea1 = new Rectangle(stageW*.25,stageH*.20,green)//.addTo(battlePage)//.center().mov(-100);
+        var heroArea2 = v.heroArea2 = new Rectangle(stageW*.25,stageH*.20,blue)//.addTo(battlePage)//.center().mov(100);
+        var heroArea3 = v.heroArea3 = new Rectangle(stageW*.25,stageH*.20,orange)//.addTo(battlePage)//.center().mov(0,100);
+        var heroArea4 = v.heroArea4 = new Rectangle(stageW*.25,stageH*.20,purple)//.addTo(battlePage)//.center().mov(200,100);
+
+        var hero1Body = v.hero1Body = frame.asset("hero1.png").sca(.22)//new Circle(heroArea1.width*.18,green);
+        var hero2Body = v.hero2Body = frame.asset("hero2.png").sca(.22)//new Circle(heroArea2.width*.18,blue);
+        var hero3Body = v.hero3Body = frame.asset("hero3.png").sca(.22)//new Circle(heroArea3.width*.18,orange);
+        var hero4Body = v.hero4Body = frame.asset("hero4.png").sca(.22)//new Circle(heroArea4.width*.18,pink);
+
+        var sniper = v.sniper = new Rectangle(150,15,grey);//.center(hero1Body).mov(50);
+        var sword = v.sword = new Rectangle(10,90,grey);//.center(hero2Body).mov(40,-20);
+        var rock = v.rock = new Rectangle(30,30,"brown");//.center(hero3Body);
+        var rocket = v.rocket = new Rectangle(100,40,"grey");//.center(hero4Body).mov(25);
+
+        var hero1Name = v.hero1Name = "Ben";
+        var hero2Name = v.hero2Name = "Steve";
+        var hero3Name = v.hero3Name = "Tommy";
+        var hero4Name = v.hero4Name = "Frank";
 
         v.enemyArray = [];
-        v.enemy = new Circle(v.heroArea.width*.40,red);
+        v.enemy = new Circle(v.heroArea1.width*.10,red);
 
         v.enemyArray2 = [];
-        v.enemy2 = new Circle(v.heroArea2.width*.40,red);
+        v.enemy2 = new Circle(v.heroArea2.width*.10,red);
 
         v.enemyArray3 = [];
-        v.enemy3 = new Circle(v.heroArea3.width*.40,red);
+        v.enemy3 = new Circle(v.heroArea3.width*.10,red);
 
-        v.heroSelect1 = new Rectangle(stageW*.25,stageH*.20,black);
-        v.heroSelect2 = new Rectangle(stageW*.25,stageH*.20,black);
-        v.heroSelect3 = new Rectangle(stageW*.25,stageH*.20,black);
-        v.heroSelect4 = new Rectangle(stageW*.25,stageH*.20,black);
-        v.botGui = new Tile({
-          obj:series(v.heroSelect1,v.heroSelect2,v.heroSelect3,v.heroSelect4),
-          cols:4, rows:1,
-          height:stageH*.20, width:stageW
+        v.enemy1 = frame.asset("enemy1.png").sca(.13);
+
+        var hero1 = v.hero1 = {
+          name:hero1Name,
+          level:0,
+          exp:0,
+          hp:100,
+          weapon:sniper,
+          range:200,
+          damage:50,
+          body:hero1Body,
+          active:false,
+          copy:copy(hero1Body,true)
+        }
+        v.attackArray = [];
+
+        var hero2 = v.hero2 = {
+          name:hero2Name,
+          level:0,
+          exp:0,
+          hp:100,
+          weapon:sword,
+          range:10,
+          damage:100,
+          body:hero2Body,
+          active:false,
+          copy:copy(hero2Body,true)
+        }
+        v.attackArray2 = [];
+
+        var hero3 = v.hero3 = {
+          name:hero3Name,
+          level:0,
+          exp:0,
+          hp:100,
+          weapon:rock,
+          range:10,
+          damage:20,
+          body:hero3Body,
+          active:false,
+          copy:copy(hero3Body,true)
+        }
+        v.attackArray3 = [];
+
+        var hero4 = v.hero4 = {
+          name:hero4Name,
+          level:0,
+          exp:0,
+          hp:100,
+          weapon:rocket,
+          range:50,
+          damage:100,
+          body:hero4Body,
+          active:false,
+          copy:copy(hero4Body,true)
+        }
+        v.attackArray4 = [];
+
+        v.heroAreaObject1 = {
+          area:heroArea1,
+          currentHero:hero1,
+          copy:copy(hero1,true),
+          weaponCopy:copy(hero1.weapon,true)
+        };
+        v.heroAreaObject2 = {
+          area:heroArea2,
+          currentHero:hero2,
+          copy:copy(hero2,true),
+          weaponCopy:copy(hero2.weapon,true)
+        }
+        v.heroAreaObject3 = {
+          area:heroArea3,
+          currentHero:hero3,
+          copy:copy(hero3,true),
+          weaponCopy:copy(hero3.weapon,true)
+        }
+        v.heroAreaObject4 = {
+          area:heroArea4,
+          currentHero:hero4,
+          copy:copy(hero4,true),
+          weaponCopy:copy(hero4.weapon,true)
+        }
+
+        v.botGui = new Tabs({
+          width:stageW,
+          height:stageH*.20,
+          tabs:[v.heroAreaObject1.area,v.heroAreaObject2.area,v.heroAreaObject3.area,v.heroAreaObject4.area],
+          backgroundColor:black,
+          color:black
         }).addTo(battlePage);
-
-        v.heroAvatar1 = new Circle(v.heroSelect1.width*.20,green).center(v.botGui.children[0]);
-        v.heroAvatar2 = new Circle(v.heroSelect2.width*.20,blue).center(v.botGui.children[1]);
-        v.heroAvatar3 = new Circle(v.heroSelect3.width*.20,orange).center(v.botGui.children[2]);
-        v.heroAvatar4 = new Circle(v.heroSelect4.width*.20,pink).center(v.botGui.children[3]);
-
-        v.pauseActive = new Rectangle(stageW,stageH*.60,blue).center(battlePage).alp(0);
 
         const battlePageLayout = new Layout(battlePage,[
           {object:v.topGui},
-          {object:v.topPath},
-          {object:v.midPath},
-          {object:v.botPath},
+          {object:v.path.shape},
+          {object:v.path2.shape},
+          {object:v.path3.shape},
           {object:v.botGui}
         ]);
-        // BATTLE PAGE END
+        // END BATTLE PAGE
 
         // CUSTOMIZE PAGE START
         // CUSTOMIZE PAGE END
@@ -120,19 +224,19 @@ var app = function(app) {  // module pattern
         ]);
         // SETTINGS PAGE END
 
-        v.manager = new Manager();
+         v.manager = new Manager();
 
-        v.manager.add(menuPageLayout);
-        v.manager.add(battlePageLayout);
-        v.manager.add(settingsPageLayout);
+         v.manager.add(menuPageLayout);
+         v.manager.add(battlePageLayout);
+         v.manager.add(settingsPageLayout);
 
-        const pages = v.pages = new Pages([
-          {page:menuPage},
-          {page:battlePage},
-          {page:settingsPage}
-        ],"slide").addTo();
+         const pages = v.pages = new Pages([
+           {page:menuPage},
+           {page:battlePage},
+           {page:settingsPage}
+         ],"slide").addTo();
 
-        v.manager.add(pages);
+         v.manager.add(pages);
 
         return v;
     }

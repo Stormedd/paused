@@ -28,8 +28,10 @@
 var scaling = "full"; // this will resize to fit inside the screen dimensions
 var color = light; // ZIM colors like green, blue, pink, faint, clear, etc.
 var outerColor = dark; // any HTML colors like "violet", "#333", etc. are fine to use
+var assets = ["bg.png","enemy1.png","hero1.png","hero2.png","hero3.png","hero4.png","sniper.png","sword.png","rock.png","rocket.png","top.png","middle.png","bottom.png"]
+var path = "assets/";
 
-var frame = new Frame(scaling, null, null, color, outerColor);
+var frame = new Frame(scaling, null, null, color, outerColor, assets, path, new Waiter({backgroundColor:blue, corner:[30,30,0,0]}));
 frame.on("ready", function() {
     zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
 
