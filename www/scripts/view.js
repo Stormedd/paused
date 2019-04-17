@@ -178,8 +178,8 @@ var app = function(app) {  // module pattern
           width:stageW,
           height:stageH*.20,
           tabs:[v.heroAreaObject1.area,v.heroAreaObject2.area,v.heroAreaObject3.area,v.heroAreaObject4.area],
-          backgroundColor:black,
-          color:black
+          currentSelected:false,
+          keyEnabled:false
         }).addTo(battlePage);
 
         const battlePageLayout = new Layout(battlePage,[

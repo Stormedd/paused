@@ -63,6 +63,7 @@ var app = function(app) {  // module pattern
 
             var areaToggled = false;
             var selectedHero;
+            var selectedColor;
 
             heros[0].body.center(areas[0].area);
             heros[1].body.center(areas[1].area);
@@ -82,6 +83,8 @@ var app = function(app) {  // module pattern
               area.area.on("click",function (e) {
                 clicks+=1;
                 if (areaToggled==false&&clicks==1&&area.currentHero.active==false) {
+                  selectedColor = area.area.color;
+                  console.log(selectedColor);
                   areaToggled = true;
                   e.currentTarget.color = "white";
                   selectedHero = area;
@@ -92,7 +95,7 @@ var app = function(app) {  // module pattern
                 if (areaToggled==true&&clicks==3) {
                   clicks=0;
                   areaToggled = false;
-                  e.currentTarget.color = "black";
+                  e.currentTarget.color = selectedColor;
                   stage.update();
                 }
                 if (clicks>=3) {
@@ -108,7 +111,7 @@ var app = function(app) {  // module pattern
                   if (areaToggled==true&&selectedHero.currentHero.active==false) {
                     areaToggled=false;
                     selectedHero.currentHero.active=true;
-                    selectedHero.area.color = black;
+                    selectedHero.area.color = selectedColor;
                     path.hero = selectedHero;
                     path.filled = true;
                     selectedHero.copy.body.addTo(path.shape).sca(.13).mov(10,20);
@@ -124,7 +127,7 @@ var app = function(app) {  // module pattern
                       path.hero = selectedHero;
                       areaToggled=false;
                       selectedHero.currentHero.active=true;
-                      selectedHero.area.color = black;
+                      selectedHero.area.color = selectedColor;
                       selectedHero.currentHero.active = true;
                       selectedHero.copy.body.addTo(path.shape).sca(.13).mov(10,20);
                       selectedHero.weaponCopy.center(selectedHero.copy.body);
